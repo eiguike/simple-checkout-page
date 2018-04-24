@@ -5,7 +5,7 @@
         Seus dados
         <input @change="form_name_valid" type="text" id="name" placeholder="Nome" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
         <input @change="form_email_valid" type="text" id="email" placeholder="E-mail" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-        <input @change="cpf" type="text" id="cpf" placeholder="CPF" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+        <input @change="form_cpf_valid" type="text" id="cpf" placeholder="CPF ex: 302.432.456-24" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
       </div>
 
       <div class="col-6">
@@ -84,16 +84,17 @@ export default {
         return false;
       }
     },
-    form_on_change (e) {
-      console.log(e.target);
-
-      if (e.target === "name") {
-
-      } else if (e.target === "email") {
-
-      } else if (e.target === "cpf") {
-
+    form_cpf_valid (e) {
+      var re = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
+      if (re.test(e.target.value.toLowerCase())) {
+        e.target.classList.remove("is-invalid");
+        return true;
+      } else {
+        e.target.classList.add("is-invalid");
+        return false;
       }
+    },
+    form_on_change (e) {
     },
     showModal () {
       if (validate_form()) {
