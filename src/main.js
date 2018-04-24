@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import BootstrapVue from "bootstrap-vue"
 import VueRouter from 'vue-router'
+import VueResource from 'vue-resource'
 
 import App from './App.vue'
 import About from './components/About.vue'
@@ -13,6 +14,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css"
 
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
+Vue.use(VueResource)
 
 const routes = [
   { path: '/', component: Content },
