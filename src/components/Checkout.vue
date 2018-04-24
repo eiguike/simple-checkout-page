@@ -15,7 +15,7 @@
           <option value="Card">Cartão</option>
           <option value="Boleto">Boleto</option>
         </select>
-        <input @change="form_on_change" type="text" id="holder_name" placeholder="Nome Escrito" class="card-form form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+        <input @change="form_holder_name_valid" type="text" id="holder_name" placeholder="Nome Escrito" class="card-form form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
         <input @change="form_on_change" type="text" id="number" placeholder="Número" class="card-form form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
         <div class="input-group input-group-md mb-1">
           <div class="input-group-prepend">
@@ -65,32 +65,45 @@ export default {
     }
   },
   methods: {
-    form_name_valid (e) {
-      if (e.target.value.length > 4) {
-        e.target.classList.remove("is-invalid");
+    form_name_valid () {
+      var name_input = document.getElementById("name");
+      if (name_input.value.length > 4) {
+        name_input.classList.remove("is-invalid");
         return true;
       } else {
-        e.target.classList.add("is-invalid");
+        name_input.classList.add("is-invalid");
         return false;
       }
     },
-    form_email_valid (e) {
+    form_holder_name_valid () {
+      var holder_name_input = document.getElementById("holder_name");
+      if (holder_name_input.value.length > 4) {
+        holder_name_input.classList.remove("is-invalid");
+        return true;
+      } else {
+        holder_name_input.classList.add("is-invalid");
+        return false;
+      }
+    },
+    form_email_valid () {
+      var email_input = document.getElementById("email");
       var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      if (re.test(e.target.value.toLowerCase())) {
-        e.target.classList.remove("is-invalid");
+      if (re.test(email_input.value.toLowerCase())) {
+        email_input.classList.remove("is-invalid");
         return true;
       } else {
-        e.target.classList.add("is-invalid");
+        email_input.classList.add("is-invalid");
         return false;
       }
     },
-    form_cpf_valid (e) {
+    form_cpf_valid () {
+      var cpf_input = document.getElementById("cpf");
       var re = /^\d{3}\.\d{3}\.\d{3}\-\d{2}$/;
-      if (re.test(e.target.value.toLowerCase())) {
-        e.target.classList.remove("is-invalid");
+      if (re.test(cpf_input.value.toLowerCase())) {
+        cpf_input.classList.remove("is-invalid");
         return true;
       } else {
-        e.target.classList.add("is-invalid");
+        cpf_input.classList.add("is-invalid");
         return false;
       }
     },
