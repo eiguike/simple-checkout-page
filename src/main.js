@@ -8,6 +8,7 @@ import About from './components/About.vue'
 import Content from './components/Content.vue'
 import ShoppingCart from './components/ShoppingCart.vue'
 import Checkout from './components/Checkout.vue'
+import Payment from './components/Payment.vue'
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap-vue/dist/bootstrap-vue.css"
@@ -18,9 +19,8 @@ Vue.use(VueResource)
 
 const routes = [
   { path: '/', component: Content },
-  { path: '/about', component: About },
-  { path: '/shoppingcart', component: ShoppingCart },
-  { path: '/checkout', component: Checkout }
+  { path: '/checkout', component: Checkout },
+  { path: '/checkout/payment', component: Payment }
 ]
 
 const router = new VueRouter({
@@ -34,4 +34,3 @@ new Vue({
   components: { App },
   router
 })
-
