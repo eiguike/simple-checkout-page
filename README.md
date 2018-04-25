@@ -1,6 +1,7 @@
 # simple-checkout-page
 
-> A Simple Checkout Page using vue.js with Bootstrap
+> A Simple Checkout Page using vue.js with Bootstrap to test the Payment
+> API for Moip Technical Challenge
 
 ## Build Setup
 
@@ -14,5 +15,3 @@ npm run dev
 # build for production with minification
 npm run build
 ```
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
