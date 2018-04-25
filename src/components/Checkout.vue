@@ -5,8 +5,22 @@
       <input @change="form_name_valid" type="text" id="name" placeholder="Nome" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
       <input @change="form_email_valid" type="text" id="email" placeholder="E-mail" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
       <input @change="form_cpf_valid" type="text" id="cpf" placeholder="CPF ex: 302.432.456-24" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
+      <select @change="select_on_change" id="payment_method">
+        <option value="Card">Cartão</option>
+        <option value="Boleto">Boleto</option>
+      </select>
 
-      <button @click="choose_payment_method" type="button" class="col-12 btn btn-success">Escolher pagamento</button>
+      <div class="pt-3">
+        <b-button @click="show_modal" class="col-12 btn-success">
+          {{ button_payment }}
+        </b-button>
+        <b-modal ref="myModalRef" hide-footer title="Estado do Pagamento">
+          <div class="d-block text-center">
+            <h3>{{ message }}!</h3>
+          </div>
+          <b-btn class="mt-3" variant="outline-danger" block @click="hide_modal">Close Me</b-btn>
+        </b-modal>
+      </div>
     </div>
   </div>
 </template>
@@ -29,7 +43,9 @@ export default {
   },
   data() {
     return {
-      payment: ''
+      message: '',
+      payment: '',
+      button_payment: 'Adicionar informações do Cartão'
     }
   },
   methods: {
@@ -65,11 +81,71 @@ export default {
         return false;
       }
     },
-    choose_payment_method () {
-      if (this.validate_form()) {
-        // todo: need to store the data to the current session
-        window.location.replace("http://localhost:8080/checkout/payment");
+    select_on_change() {
+      payment_method = document.getElementById("payment_method").value
+      if (payment_method === "Card") {
+        this.button_payment = "Adicionar informações do Cartão";
+      } else {
+        this.button_payment = "Efetuar pagamento";
       }
+    },
+    hide_modal () {
+      this.$refs.myModalRef.hide()
+    },
+    show_modal() {
+      if (this.validate_form()) {
+        this.next_step_checkout();
+        this.$refs.myModalRef.show();
+      }
+    },
+    next_step_checkout () {
+      name = document.getElementById("name").value;
+      email = document.getElementById("email").value;
+      cpf = document.getElementById("cpf").value;
+      payment_method = document.getElementById("payment_method").value;
+
+      if (payment_method === "Card") {
+        sessionStorage.setItem('name', name);
+        sessionStorage.setItem('email', email);
+        sessionStorage.setItem('cpf', cpf);
+        window.location.replace("http://localhost:8080/checkout/payment");
+      } else {
+        this.prepare_json();
+        this.sent_request();
+      }
+    },
+    prepare_json() {
+      var name = document.getElementById("name").value;
+      var email = document.getElementById("email").value;
+      var cpf = document.getElementById("cpf").value;
+      var method_type = document.getElementById("payment_method").value;
+      this.payment = { "payment": {
+                          method_type,
+                          "amount": "123.30",
+                          "client": {
+                            "client_id": "1"
+                          },
+                          "buyer": {
+                            name,
+                            email,
+                            "CPF": cpf
+                          }
+                        }
+                      };
+    },
+    sent_request() {
+      console.log(this.payment);
+      this.$http.post('http://localhost:3000/api/v1/payments/', this.payment).then(response => {
+        if (response.status == 201) {
+          this.message = "Boleto gerado com êxito!";
+        } else {
+          this.message = "Falha ao gerar o Boleto!";
+        }
+        this.status = response.body.status;
+        sessionStorage.setItem("payments", JSON.stringify(response.body));
+      }, response => {
+        console.log("ERROR" + response);
+      });
     },
     validate_form () {
       return this.form_name_valid() && this.form_email_valid() && this.form_cpf_valid();
@@ -82,10 +158,4 @@ export default {
 }
 
 </script>
-
-<style>
-.hidden-form {
-  visibility: hidden;
-}
-</style>
 

@@ -1,6 +1,5 @@
 <template>
   <div id="content">
-    <span> HELLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO</span>
   </div>
 </template>
 
