@@ -16,6 +16,7 @@
     "bootstrap-vue": "^1.2.0",
     "card": "^2.4.0",
     "card-js": "^1.0.13",
+    "jquery": "^3.3.1",
     "popper.js": "^1.12.9",
     "vue": "^2.5.3",
     "vue-awesome": "^3.0.0",
