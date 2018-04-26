@@ -3,12 +3,9 @@ import BootstrapVue from "bootstrap-vue"
 import VueRouter from 'vue-router'
 import VueResource from 'vue-resource'
 
-import About from './components/About.vue'
-import Content from './components/Content.vue'
-import ShoppingCart from './components/ShoppingCart.vue'
 import App from './App.vue'
+import Content from './components/Content.vue'
 import Checkout from './components/Checkout.vue'
-import Payment from './components/Payment.vue'
 import Boleto from './components/Boleto.vue'
 import Card from './components/Card.vue'
 import CardJs from 'card'
