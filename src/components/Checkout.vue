@@ -5,10 +5,13 @@
       <input @change="form_name_valid" type="text" id="name" placeholder="Nome" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
       <input @change="form_email_valid" type="text" id="email" placeholder="E-mail" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
       <input @change="form_cpf_valid" type="text" id="cpf" placeholder="CPF ex: 302.432.456-24" class="form-control mb-1" aria-label="Large" aria-describedby="inputGroup-sizing-sm">
-      <select @change="select_on_change" id="payment_method">
+      <select @change="select_on_change" id="payment_method" class="form-control">
         <option value="Card">Cartão</option>
         <option value="Boleto">Boleto</option>
       </select>
+      <div class="col-12">
+        Preço Total: R${{ amount }}
+      </div>
 
       <div class="pt-3">
         <b-button @click="show_modal" class="col-12 btn-success">
@@ -27,26 +30,18 @@
 
 <script>
 
-import FontAwesomeIcon from '@fortawesome/vue-fontawesome'
-import faUser from '@fortawesome/fontawesome-free-solid/faUser'
-import faEnvelope from '@fortawesome/fontawesome-free-solid/faEnvelope'
-
 export default {
   name: 'checkout',
-  computed: {
-    envelope_icon () {
-      return faEnvelope
-    },
-    user_icon () {
-      return faUser
-    }
-  },
   data() {
     return {
       message: '',
       payment: '',
+      amount: '',
       button_payment: 'Adicionar informações do Cartão'
     }
+  },
+  mounted() {
+    this.amount = (Math.random() * (1000 - 20) + 20).toFixed(2);
   },
   methods: {
     form_name_valid () {
@@ -90,6 +85,13 @@ export default {
       }
     },
     hide_modal () {
+      payment_method = document.getElementById("payment_method").value
+      console.log(this.status);
+      if (this.status == 201 &&
+          payment_method === "Boleto") {
+        window.location.replace("http://localhost:8080/checkout/boleto");
+      }
+
       this.$refs.myModalRef.hide()
     },
     show_modal() {
@@ -99,16 +101,23 @@ export default {
       }
     },
     next_step_checkout () {
-      name = document.getElementById("name").value;
-      email = document.getElementById("email").value;
-      cpf = document.getElementById("cpf").value;
-      payment_method = document.getElementById("payment_method").value;
+      var name = document.getElementById("name").value;
+      var email = document.getElementById("email").value;
+      var cpf = document.getElementById("cpf").value;
+      var payment_method = document.getElementById("payment_method").value;
 
       if (payment_method === "Card") {
-        sessionStorage.setItem('name', name);
-        sessionStorage.setItem('email', email);
-        sessionStorage.setItem('cpf', cpf);
-        window.location.replace("http://localhost:8080/checkout/payment");
+        var amount = this.amount;
+        var json_buyer = { "payment": { "buyer": { name,
+                                                   email,
+                                                   CPF: cpf },
+                                         "client": { "client_id": 1 },
+                                         "method_type": payment_method,
+                                         amount }
+                         };
+
+        sessionStorage.setItem("card_payment", JSON.stringify(json_buyer));
+        window.location.replace("http://localhost:8080/checkout/card");
       } else {
         this.prepare_json();
         this.sent_request();
@@ -121,7 +130,7 @@ export default {
       var method_type = document.getElementById("payment_method").value;
       this.payment = { "payment": {
                           method_type,
-                          "amount": "123.30",
+                          "amount": this.amount,
                           "client": {
                             "client_id": "1"
                           },
@@ -138,23 +147,18 @@ export default {
       this.$http.post('http://localhost:3000/api/v1/payments/', this.payment).then(response => {
         if (response.status == 201) {
           this.message = "Boleto gerado com êxito!";
-        } else {
-          this.message = "Falha ao gerar o Boleto!";
         }
-        this.status = response.body.status;
+        this.status = response.status;
         sessionStorage.setItem("payments", JSON.stringify(response.body));
       }, response => {
+        this.message = "Falha ao gerar o Boleto!";
         console.log("ERROR" + response);
       });
     },
     validate_form () {
       return this.form_name_valid() && this.form_email_valid() && this.form_cpf_valid();
     },
-  },
-  components: {
-    FontAwesomeIcon
   }
-
 }
 
 </script>
